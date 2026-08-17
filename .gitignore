@@ -1,0 +1,24 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Playwright / browsers
+.playwright/
+playwright-report/
+
+# Rendered takes belong in the project you're filming, not in this skill repo.
+# If someone records into this repo by accident, don't commit the video output.
+*.webm
+*.mp4
+*.mov
+*.gif
+!examples/**/*.gif

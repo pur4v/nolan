@@ -1,0 +1,25 @@
+{
+  "name": "nolan",
+  "owner": {
+    "name": "pur4v",
+    "url": "https://github.com/pur4v"
+  },
+  "plugins": [
+    {
+      "name": "nolan",
+      "source": "./",
+      "description": "Record polished product-demo videos by driving your live app agentically — storyboard, capture with title cards + narrated captions, and polish.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "homepage": "https://github.com/pur4v/nolan",
+      "tags": [
+        "demo-video",
+        "screencast",
+        "product-demo",
+        "playwright",
+        "marketing",
+        "storyboard"
+      ]
+    }
+  ]
+}

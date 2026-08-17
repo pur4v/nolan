@@ -1,0 +1,92 @@
+{
+  "//": "FICTIONAL worked example. 'Quill' is a made-up AI writing assistant used to",
+  "//demo": "show a complete nolan storyboard. No real product, data, or secrets.",
+
+  "product": "Quill",
+  "url": "http://localhost:3000/",
+  "viewport": { "width": 1280, "height": 800 },
+  "out_dir": ".",
+  "accent": "#7c5cff",
+
+  "scenes": [
+    {
+      "name": "first-draft",
+      "file": "01-first-draft.webm",
+      "title": "Write your first draft",
+      "subtitle": "Describe it in a sentence — Quill writes the rest",
+      "steps": [
+        { "card": ["Write your first draft", "Describe it in a sentence — Quill writes the rest"], "hold": 4000 },
+        { "card": null },
+
+        { "cap": "This is Quill — your everyday writing assistant.", "hold": 3500 },
+        { "cap": "Just tell it what you need, in plain words.", "hold": 3500 },
+        { "type": { "placeholder": "Ask Quill…", "text": "Write a thank-you note to a coworker", "submit": true } },
+
+        { "cap": "Quill drafts it live, sentence by sentence.", "hold": 2500 },
+        { "wait_text": "Draft ready" },
+
+        { "cap": "Done — a ready-to-send note in seconds.", "hold": 5000 }
+      ]
+    },
+
+    {
+      "name": "tone",
+      "file": "02-change-the-tone.webm",
+      "title": "Change the tone in one click",
+      "subtitle": "Same idea, a different voice",
+      "steps": [
+        { "card": ["Change the tone in one click", "Same idea, a different voice"], "hold": 4000 },
+        { "card": null },
+
+        { "cap": "Want it warmer? Pick a tone — no rewriting.", "hold": 3800 },
+        { "select": { "label": "Friendly" } },
+        { "type": { "placeholder": "Ask Quill…", "text": "Invite the team to lunch on Friday", "submit": true } },
+
+        { "cap": "Quill rewrites in the tone you chose.", "hold": 2500 },
+        { "wait_text": "Draft ready" },
+
+        { "cap": "One control, a whole new voice — nothing retyped.", "hold": 5000 }
+      ]
+    },
+
+    {
+      "name": "history",
+      "file": "03-nothing-is-lost.webm",
+      "title": "Nothing you write is lost",
+      "subtitle": "Every draft, saved automatically",
+      "steps": [
+        { "card": ["Nothing you write is lost", "Every draft, saved automatically"], "hold": 4000 },
+        { "card": null },
+
+        { "cap": "Everything you write is saved for you.", "hold": 3200 },
+        { "click": { "role": "button", "name": "History" } },
+        { "wait": 2000 },
+
+        { "cap": "Here's every draft — reopen any one to keep going.", "hold": 4500 },
+        { "cap": "No save button, no lost work. That's the point.", "hold": 5000 }
+      ]
+    },
+
+    {
+      "name": "offline",
+      "file": "04-works-offline.webm",
+      "title": "Built for the bad day",
+      "subtitle": "Your connection drops — Quill keeps working",
+      "steps": [
+        { "card": ["Built for the bad day", "Your connection drops — Quill keeps working"], "hold": 4000 },
+        { "card": null },
+
+        { "cap": "Connections fail. Watch what happens when this one does.", "hold": 3800 },
+        { "//run": "In a real demo this stops a local mock backend you started for the shoot.", "run": "echo '(demo) simulating the backend going offline'", "hold": 500 },
+
+        { "cap": "The network just dropped. Keep writing anyway.", "hold": 3200 },
+        { "type": { "placeholder": "Ask Quill…", "text": "Draft a quick out-of-office reply", "submit": true } },
+
+        { "cap": "Quill queues your work and syncs the moment you're back.", "hold": 2500 },
+        { "wait_text": "Draft ready" },
+
+        { "cap": "No error, no lost words — it just kept working.", "hold": 5500 }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint & validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate all JSON is parseable
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, sys
+          bad = []
+          for p in pathlib.Path(".").rglob("*.json"):
+              if ".git" in p.parts:
+                  continue
+              try:
+                  json.load(open(p))
+              except Exception as e:
+                  bad.append(f"{p}: {e}")
+          if bad:
+              sys.exit("invalid JSON:\n" + "\n".join(bad))
+          print("all JSON parses")
+          PY
+
+      - name: Validate plugin & marketplace manifests
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          plugin = json.load(open(".claude-plugin/plugin.json"))
+          for key in ("name", "description", "version"):
+              if key not in plugin:
+                  sys.exit(f"plugin.json missing required key: {key}")
+          market = json.load(open(".claude-plugin/marketplace.json"))
+          if not market.get("plugins"):
+              sys.exit("marketplace.json missing 'plugins'")
+          print(f"manifests OK (plugin: {plugin['name']} v{plugin['version']})")
+          PY
+
+      - name: Validate SKILL.md frontmatter
+        run: |
+          python3 - <<'PY'
+          import re, pathlib, sys
+          text = pathlib.Path("skills/nolan/SKILL.md").read_text()
+          m = re.match(r'^---\n(.*?)\n---\n', text, re.S)
+          if not m:
+              sys.exit("SKILL.md is missing YAML frontmatter")
+          fm = m.group(1)
+          for key in ("name", "description"):
+              if not re.search(rf'^{key}:', fm, re.M):
+                  sys.exit(f"SKILL.md frontmatter missing required key: {key}")
+          print("SKILL.md frontmatter OK")
+          PY
+
+      - name: Check slash commands have descriptions
+        run: |
+          python3 - <<'PY'
+          import re, pathlib, sys
+          bad = []
+          for p in sorted(pathlib.Path("commands").glob("*.md")):
+              m = re.match(r'^---\n(.*?)\n---\n', p.read_text(), re.S)
+              if not m or not re.search(r'^description:', m.group(1), re.M):
+                  bad.append(p.name)
+          if bad:
+              sys.exit("commands missing frontmatter description: " + ", ".join(bad))
+          print("all commands have a description")
+          PY
+
+      - name: Byte-compile the recorder
+        run: python3 -m py_compile skills/nolan/scripts/record.py

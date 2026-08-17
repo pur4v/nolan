@@ -1,0 +1,46 @@
+{
+  "//": "nolan storyboard template. Copy this next to the project you're filming, edit,",
+  "//product": "then: python3 scripts/record.py storyboard.json  (see reference/storyboard.md).",
+
+  "product": "YourProduct",
+  "url": "http://localhost:3000/",
+  "viewport": { "width": 1280, "height": 800 },
+  "out_dir": ".",
+  "accent": "#4b8bff",
+
+  "scenes": [
+    {
+      "name": "core-flow",
+      "file": "01-core-flow.webm",
+      "title": "The one-sentence pitch of this scene",
+      "subtitle": "The benefit, in the user's words",
+      "steps": [
+        { "card": ["The one-sentence pitch of this scene", "The benefit, in the user's words"], "hold": 4000 },
+        { "card": null },
+
+        { "cap": "Set up the viewer: what is this, in plain words.", "hold": 3500 },
+        { "type": { "placeholder": "The field's placeholder text", "text": "An everyday, relatable input", "submit": true } },
+
+        { "cap": "Say what's happening as a benefit, not a mechanic.", "hold": 2500 },
+        { "wait_text": "A real completion marker from the UI" },
+
+        { "cap": "Close on the payoff — what the user just got.", "hold": 5000 }
+      ]
+    },
+
+    {
+      "name": "second-feature",
+      "file": "02-second-feature.webm",
+      "title": "One idea per scene",
+      "subtitle": "If you want to show two things, make two scenes",
+      "steps": [
+        { "card": ["One idea per scene", "If you want to show two things, make two scenes"], "hold": 4000 },
+        { "card": null },
+        { "cap": "Reveal a second capability.", "hold": 3500 },
+        { "click": { "role": "button", "name": "SomeTab" } },
+        { "wait": 2000 },
+        { "cap": "Explain what the viewer is looking at.", "hold": 4500 }
+      ]
+    }
+  ]
+}

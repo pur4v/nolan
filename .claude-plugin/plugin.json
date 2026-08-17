@@ -1,0 +1,23 @@
+{
+  "name": "nolan",
+  "description": "Record polished product-demo videos by driving your live app agentically — storyboard the shots, capture them with on-screen title cards and narrated captions in a product-manager voice, and polish for pacing and completeness.",
+  "version": "0.1.0",
+  "author": {
+    "name": "pur4v",
+    "url": "https://github.com/pur4v"
+  },
+  "homepage": "https://github.com/pur4v/nolan",
+  "repository": "https://github.com/pur4v/nolan",
+  "license": "MIT",
+  "keywords": [
+    "demo",
+    "demo-video",
+    "screencast",
+    "product-demo",
+    "screen-recording",
+    "playwright",
+    "storyboard",
+    "captions",
+    "marketing"
+  ]
+}
