@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="banner.png" alt="nolan" width="100%" />
+
 # nolan 🎬
 
 **Record product-demo videos by driving your live app — narrated like a product manager.**
