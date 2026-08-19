@@ -17,6 +17,10 @@ Each scene becomes its own `.webm` in the storyboard's `out_dir`, with the capti
 title-card overlay baked in. Before a full shoot, dry-run one scene to catch bad
 selectors (a wrong locator wastes a whole take) — prefer `role`+`name` or `placeholder`.
 
+If the storyboard has a `voice` block, `record.py` also synthesizes spoken narration
+from each scene's `vo` lines and muxes it in (needs ffmpeg + a TTS provider — see
+`reference/narration.md`). No `voice` block → silent video, as before.
+
 Never film sensitive data or secrets, and only use a `run` step against a process **you
 own and started for the demo**.
 

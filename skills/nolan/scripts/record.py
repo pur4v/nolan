@@ -8,9 +8,13 @@ action to fully complete, and saves one .webm per scene.
 Usage:
     python3 record.py storyboard.json [scene-name ...]     # no names = all scenes
 
+Optional spoken narration: add a `voice` block to the storyboard and `vo` lines to
+scenes/steps, and each scene gets human-sounding audio muxed in (see narrate.py).
+
 Storyboard shape and the full step reference live in
 ../reference/storyboard.md. Prerequisites:
     pip install playwright && playwright install chromium
+    # for narration audio only: ffmpeg (macOS: brew install ffmpeg)
 """
 import json
 import subprocess
@@ -25,6 +29,8 @@ except ImportError:
         "Playwright is not installed. Run:\n"
         "    pip install playwright && playwright install chromium"
     )
+
+import narrate  # sibling module: optional spoken narration (see narrate.py)
 
 # ---- injected overlay: a top subtitle banner + a full-screen title card ------
 # Exposes window.__cap(text) and window.__card(title, sub) on the page so the
@@ -164,7 +170,20 @@ def _wait_text(pg, text, timeout_ms):
             last = body
 
 
-def _shoot(browser, sb, scene, out_dir):
+def _scene_line(step, scene_vo):
+    """Narration text for a step: explicit `vo` → a `cap` string → nothing.
+
+    Suppressed when the scene carries a single scene-level `vo` (spoken at the top).
+    """
+    if isinstance(scene_vo, str) and scene_vo.strip():
+        return None
+    text = step.get("vo")
+    if not text and isinstance(step.get("cap"), str):
+        text = step["cap"]
+    return str(text) if text and str(text).strip() else None
+
+
+def _shoot(browser, sb, scene, out_dir, voice=None, provider=None):
     view = sb.get("viewport", {"width": 1280, "height": 800})
     accent = sb.get("accent", "#4b8bff")
     product = sb.get("product", "")
@@ -172,13 +191,20 @@ def _shoot(browser, sb, scene, out_dir):
 
     ctx = browser.new_context(viewport=view, record_video_dir=str(out_dir), record_video_size=view)
     pg = ctx.new_page()
+    t0 = time.monotonic()  # ≈ when the video starts recording; narration offsets from here
     pg.goto(sb["url"], wait_until="networkidle")
     pg.wait_for_timeout(1200)
     pg.evaluate(f"({INJECT})([{json.dumps(accent)}])")
 
-    # Optional per-scene opening card from title/subtitle (if not already a step).
+    scene_vo = scene.get("vo")
+    lines = []  # (offset_seconds, spoken text), timed to when each step fires
     for step in scene["steps"]:
+        text = _scene_line(step, scene_vo)
+        if text is not None:
+            lines.append((time.monotonic() - t0, text))
         _do_step(pg, step, product)
+    if isinstance(scene_vo, str) and scene_vo.strip():
+        lines = [(0.0, scene_vo)]
 
     video_path = pg.video.path()
     ctx.close()  # finalizes the .webm
@@ -187,6 +213,13 @@ def _shoot(browser, sb, scene, out_dir):
         dst.unlink()
     Path(video_path).rename(dst)
     print(f"  saved {dst}")
+
+    # Optional spoken narration, timed to the steps and muxed onto the .webm.
+    if provider and provider[1] and lines:
+        try:
+            narrate.narrate_scene(dst, lines, voice, provider=provider)
+        except Exception as e:  # narration is best-effort: never fail a good take
+            print(f"     [narrate] skipped ({e})")
 
 
 def main(argv):
@@ -206,10 +239,15 @@ def main(argv):
             sys.exit(f"no such scene(s): {', '.join(missing)}")
         scenes = [by_name[n] for n in wanted]
 
+    voice = sb.get("voice")
+    provider = narrate.resolve_provider(voice)  # (name, fn) or (None, None); warns once
+    if provider[1]:
+        print(f"[voice] narration provider: {provider[0]}")
+
     with sync_playwright() as pw:
         browser = pw.chromium.launch()
         for scene in scenes:
-            _shoot(browser, sb, scene, out_dir)
+            _shoot(browser, sb, scene, out_dir, voice=voice, provider=provider)
         browser.close()
     print("done ->", out_dir)
 

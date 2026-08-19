@@ -12,6 +12,7 @@ A storyboard is a JSON file. Top-level shape:
   "viewport": { "width": 1280, "height": 800 },
   "out_dir": ".",
   "accent": "#4b8bff",
+  "voice": { "provider": "auto" },
   "scenes": [ /* … */ ]
 }
 ```
@@ -23,6 +24,7 @@ A storyboard is a JSON file. Top-level shape:
 | `viewport` | Recording size in px. `1280×800` is a good 16:10 default. |
 | `out_dir` | Where `.webm` files are written (relative to the storyboard file). |
 | `accent` | Hex colour for the title-card mark. Match the product's brand. |
+| `voice` | *Optional.* Enables spoken narration and picks the TTS provider. Omit it (or set `"provider": "none"`) to keep the video silent. See `reference/narration.md`. |
 | `scenes` | Ordered list of scenes; each becomes one `.webm`. |
 
 ## A scene
@@ -44,7 +46,8 @@ are the opening full-screen card.
 ## Steps
 
 Each step is an object with **one** action key (plus optional `hold`, in ms, to pause
-after it). Steps run top to bottom.
+after it, and optional `vo`, a spoken narration line — see below). Steps run top to
+bottom.
 
 | Step | Example | Does |
 |---|---|---|
@@ -73,6 +76,11 @@ after it). Steps run top to bottom.
   wait for the real completion marker so the take is complete, then `cap` a closing
   line and `hold` ~4–5s so the result is readable.
 - **One idea per scene.** If you're tempted to demo two features, make two scenes.
+- **Optional: narrate it out loud.** Add a `voice` block to the storyboard and a `vo`
+  line to any step (or a scene-level `"vo"` paragraph) to get human-sounding spoken
+  narration muxed onto the `.webm`, timed to the steps. If a step has no `vo`, its
+  `cap` text is spoken instead. Full details — providers, keys, ffmpeg — in
+  `reference/narration.md`.
 
 ## Minimal example
 

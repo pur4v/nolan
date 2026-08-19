@@ -77,5 +77,5 @@ jobs:
           print("all commands have a description")
           PY
 
-      - name: Byte-compile the recorder
-        run: python3 -m py_compile skills/nolan/scripts/record.py
+      - name: Byte-compile the recorder & narrator
+        run: python3 -m py_compile skills/nolan/scripts/record.py skills/nolan/scripts/narrate.py

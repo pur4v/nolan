@@ -8,6 +8,10 @@
   "out_dir": ".",
   "accent": "#7c5cff",
 
+  "//voice": "Optional spoken narration. 'auto' picks the best TTS available; set a",
+  "//voice2": "specific provider + API key for human-sounding audio. See reference/narration.md.",
+  "voice": { "provider": "auto" },
+
   "scenes": [
     {
       "name": "first-draft",
@@ -15,17 +19,21 @@
       "title": "Write your first draft",
       "subtitle": "Describe it in a sentence — Quill writes the rest",
       "steps": [
-        { "card": ["Write your first draft", "Describe it in a sentence — Quill writes the rest"], "hold": 4000 },
+        { "card": ["Write your first draft", "Describe it in a sentence — Quill writes the rest"], "hold": 4000,
+          "vo": "Meet Quill — your everyday writing assistant. Let's write a first draft together." },
         { "card": null },
 
         { "cap": "This is Quill — your everyday writing assistant.", "hold": 3500 },
-        { "cap": "Just tell it what you need, in plain words.", "hold": 3500 },
+        { "cap": "Just tell it what you need, in plain words.", "hold": 3500,
+          "vo": "You just tell Quill what you need, in plain words — no prompts to learn." },
         { "type": { "placeholder": "Ask Quill…", "text": "Write a thank-you note to a coworker", "submit": true } },
 
-        { "cap": "Quill drafts it live, sentence by sentence.", "hold": 2500 },
+        { "cap": "Quill drafts it live, sentence by sentence.", "hold": 2500,
+          "vo": "And Quill drafts it live, sentence by sentence, right in front of you." },
         { "wait_text": "Draft ready" },
 
-        { "cap": "Done — a ready-to-send note in seconds.", "hold": 5000 }
+        { "cap": "Done — a ready-to-send note in seconds.", "hold": 5000,
+          "vo": "Done — a warm, ready-to-send note in just a few seconds." }
       ]
     },
 

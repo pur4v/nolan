@@ -8,6 +8,10 @@
   "out_dir": ".",
   "accent": "#4b8bff",
 
+  "//voice": "OPTIONAL spoken narration. Remove this block for a silent video. provider:",
+  "//voice2": "auto|elevenlabs|openai|deepgram|piper|say|command|none. See reference/narration.md.",
+  "voice": { "provider": "auto" },
+
   "scenes": [
     {
       "name": "core-flow",
@@ -15,7 +19,8 @@
       "title": "The one-sentence pitch of this scene",
       "subtitle": "The benefit, in the user's words",
       "steps": [
-        { "card": ["The one-sentence pitch of this scene", "The benefit, in the user's words"], "hold": 4000 },
+        { "card": ["The one-sentence pitch of this scene", "The benefit, in the user's words"], "hold": 4000,
+          "vo": "Optional: a full spoken sentence, in your product-manager voice, for this moment." },
         { "card": null },
 
         { "cap": "Set up the viewer: what is this, in plain words.", "hold": 3500 },
@@ -24,7 +29,8 @@
         { "cap": "Say what's happening as a benefit, not a mechanic.", "hold": 2500 },
         { "wait_text": "A real completion marker from the UI" },
 
-        { "cap": "Close on the payoff — what the user just got.", "hold": 5000 }
+        { "cap": "Close on the payoff — what the user just got.", "hold": 5000,
+          "vo": "Steps with no vo fall back to speaking their cap text; omit vo everywhere to narrate the captions." }
       ]
     },
 

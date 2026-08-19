@@ -98,9 +98,32 @@ These are what separate a demo from a screen grab. They are not optional.
   environment you're allowed to film).
 - Realistic, non-sensitive demo data loaded in the app — see discipline §2 and the
   data note in `SECURITY.md`. Never film real customer data or secrets.
+- **Optional — spoken narration.** By default the demo is silent (captions carry it).
+  To add a *human-sounding voiceover*, add a `voice` block to the storyboard and `vo`
+  lines to steps; this needs **ffmpeg** (`brew install ffmpeg`) plus a TTS provider —
+  ElevenLabs / OpenAI / Deepgram (API key, most human), Piper (offline, open-source),
+  macOS `say` (free, robotic), or any tool via a `command` template. See
+  `reference/narration.md`.
 
 See `reference/recording.md` for the harness details, the overlay technique, and the
 storyboard step reference.
+
+## Adding narration (optional)
+
+Narration is off unless the storyboard has a `voice` block. When someone asks for
+audio / a voiceover / it to "sound human":
+
+1. **Ask which provider.** For truly human audio, use a cloud provider and confirm the
+   user has (or will add) the API key: `ELEVENLABS_API_KEY`, `OPENAI_API_KEY`, or
+   `DEEPGRAM_API_KEY`. They can also point `command` at their own TTS tool.
+2. **If they have no key**, offer the free/offline fallbacks (Piper for decent quality,
+   macOS `say` for zero-setup-but-robotic) — or `"provider": "auto"` to use the best
+   available.
+3. **If they want neither**, leave `voice` out (or `"provider": "none"`) — the video
+   records silent, exactly as before.
+
+Then write `vo` lines in the same PM voice as the captions and record as usual;
+`record.py` synthesizes and muxes the audio per scene. Details: `reference/narration.md`.
 
 ## Output principles
 

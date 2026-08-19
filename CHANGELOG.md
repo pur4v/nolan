@@ -6,6 +6,17 @@ All notable changes to nolan are documented here. The format is based on
 
 ## [Unreleased]
 
+### Added
+- **Spoken narration (optional).** A new pluggable text-to-speech layer
+  (`skills/nolan/scripts/narrate.py`) generates human-sounding voiceover and muxes it
+  onto each scene's `.webm`, timed to the steps. Enable it with a top-level `voice`
+  block and per-step (or per-scene) `vo` lines; steps with no `vo` speak their `cap`
+  text. Providers: **ElevenLabs**, **OpenAI**, **Deepgram** (cloud, API key —
+  most human), **Piper** (offline, open-source), macOS **say** (free), a **command**
+  escape hatch for any other TTS, plus **auto** (best available) and **none** (silent).
+  Muxing requires ffmpeg; if ffmpeg or the provider is unavailable the scene records
+  silent with a warning. New reference: `reference/narration.md`.
+
 ## [0.1.0] — 2026-08-17
 
 First public release.
