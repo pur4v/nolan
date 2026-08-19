@@ -292,15 +292,43 @@ def narrate_scene(video, lines, voice, provider=None):
 # --- standalone CLI: scene-level narration for already-recorded scenes -------
 
 
-def _scene_lines(scene):
-    """Scene-level narration for the standalone (post-hoc, untimed) path.
+def scene_vo_lines(scene):
+    """Parse a scene-level `vo` into [(offset_seconds, text)], or None if absent.
 
-    Uses scene `vo` if present; else concatenates step `vo`/`cap` text. Everything
-    plays from the top (offset 0), since step timing isn't known post-recording.
+    A scene `vo` may be:
+      - a string           -> one line spoken from the top (offset 0), or
+      - a list of timed lines, each `{"at": seconds, "text": "…"}` or `[seconds,
+        "text"]` -> lines placed at explicit offsets (ideal for narrating footage
+        that's already recorded, where step timing isn't otherwise known).
+    Returns None when the scene has no scene-level `vo` (caller falls back to
+    per-step narration).
     """
     vo = scene.get("vo")
-    if isinstance(vo, str) and vo.strip():
-        return [(0.0, vo)]
+    if isinstance(vo, str):
+        return [(0.0, vo)] if vo.strip() else None
+    if isinstance(vo, list) and vo:
+        lines = []
+        for e in vo:
+            if isinstance(e, dict) and e.get("text"):
+                lines.append((float(e.get("at", 0)), e["text"]))
+            elif isinstance(e, (list, tuple)) and len(e) == 2:
+                lines.append((float(e[0]), str(e[1])))
+            elif isinstance(e, str) and e.strip():
+                lines.append((0.0, e))
+        return lines or None
+    return None
+
+
+def _scene_lines(scene):
+    """Scene-level narration for the standalone path.
+
+    Uses scene `vo` (string or timed list) if present; otherwise concatenates step
+    `vo`/`cap` text into one line from the top, since step timing isn't known
+    post-recording.
+    """
+    sv = scene_vo_lines(scene)
+    if sv is not None:
+        return sv
     texts = []
     for step in scene.get("steps", []):
         t = step.get("vo")

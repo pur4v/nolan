@@ -47,9 +47,14 @@ Per step, the first of these that exists is spoken, timed to when the step runs:
 2. a `cap` step's string — so existing captions are narrated automatically if you
    add no `vo` at all.
 
-Alternatively, a **scene-level** `"vo": "one paragraph…"` is spoken once from the top
-of the scene (and per-step lines are then ignored for that scene). Use this for a
-single flowing voiceover; use per-step `vo` to sync speech tightly to actions.
+Alternatively, a **scene-level** `vo` overrides per-step lines for that scene:
+
+- `"vo": "one paragraph…"` — spoken once from the top (offset 0). A single flowing
+  voiceover.
+- `"vo": [ {"at": 1.5, "text": "…"}, {"at": 18, "text": "…"} ]` — **timed lines**
+  placed at explicit offsets in seconds (`[1.5, "…"]` shorthand also works). This is
+  the way to narrate footage that's **already recorded** — where the recorder can't
+  know step timing — by hand-placing each line along the clip.
 
 Write `vo` as speech, not screen text: full sentences, natural phrasing, and short
 enough to finish inside the step's `hold`/wait so lines don't overrun the next scene.

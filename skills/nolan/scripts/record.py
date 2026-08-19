@@ -170,13 +170,8 @@ def _wait_text(pg, text, timeout_ms):
             last = body
 
 
-def _scene_line(step, scene_vo):
-    """Narration text for a step: explicit `vo` → a `cap` string → nothing.
-
-    Suppressed when the scene carries a single scene-level `vo` (spoken at the top).
-    """
-    if isinstance(scene_vo, str) and scene_vo.strip():
-        return None
+def _step_line(step):
+    """Per-step narration text: explicit `vo` → a `cap` string → nothing."""
     text = step.get("vo")
     if not text and isinstance(step.get("cap"), str):
         text = step["cap"]
@@ -196,15 +191,18 @@ def _shoot(browser, sb, scene, out_dir, voice=None, provider=None):
     pg.wait_for_timeout(1200)
     pg.evaluate(f"({INJECT})([{json.dumps(accent)}])")
 
-    scene_vo = scene.get("vo")
-    lines = []  # (offset_seconds, spoken text), timed to when each step fires
+    # A scene-level `vo` (string or timed list) sets narration explicitly; else
+    # collect per-step lines timed to when each step actually fires.
+    scene_vo = narrate.scene_vo_lines(scene)
+    lines = []
     for step in scene["steps"]:
-        text = _scene_line(step, scene_vo)
-        if text is not None:
-            lines.append((time.monotonic() - t0, text))
+        if scene_vo is None:
+            text = _step_line(step)
+            if text is not None:
+                lines.append((time.monotonic() - t0, text))
         _do_step(pg, step, product)
-    if isinstance(scene_vo, str) and scene_vo.strip():
-        lines = [(0.0, scene_vo)]
+    if scene_vo is not None:
+        lines = scene_vo
 
     video_path = pg.video.path()
     ctx.close()  # finalizes the .webm
